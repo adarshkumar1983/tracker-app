@@ -1,0 +1,37 @@
+body {
+  /* background: linear-gradient(to bottom right, black, blue); */
+  background: conic-gradient(red, blue);
+  /* background-image: url("login.jpg");
+  background-position: left top;
+  background-repeat: no-repeat; */
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  width: 100%;
+  /* margin-left: 36%; */
+  align-items: center;
+  height: 100vh;
+}
+
+
+
+.box {
+  border: 1px solid #dfdfdf;
+  background-color: #fff;
+}
+
+
+
+.g-btn {
+  width: 100% !important;
+  height: 40px !important;
+  line-height: 40px !important;
+  font-size: 15px !important;
+}
+
+
+.g-btn > div,
+.g-btn > div > svg {
+  width: 40px !important;
+  height: 38px !important;
+}
