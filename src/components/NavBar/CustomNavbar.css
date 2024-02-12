@@ -1,0 +1,21 @@
+/* CustomNavbar.css */
+.user-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .expanded-details {
+    position: absolute;
+    background-color: #0479ee;
+    color: #fff;
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+    top: 100%;
+    right: 0;
+  }
+  
+  /* Adjust the margin to create space between photo and text */
+  .expanded-details p {
+    margin-bottom: 0.5rem;
+  }
+  

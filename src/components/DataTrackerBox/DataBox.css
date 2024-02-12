@@ -1,0 +1,32 @@
+.card {
+    position: relative;
+    width: 300px;
+    height: 250px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  
+  .card .content {
+    padding: 20px;
+  }
+  
+  .card .content p {
+    margin: 0;
+  }
+  
+  .card button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .card button:hover {
+    color: red;
+  }
+  

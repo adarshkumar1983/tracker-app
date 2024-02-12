@@ -1,6 +1,6 @@
 body {
   /* background: linear-gradient(to bottom right, black, blue); */
-  background: conic-gradient(red, blue);
+  background: conic-gradient(rgb(0, 0, 0), rgb(0, 0, 0));
   /* background-image: url("login.jpg");
   background-position: left top;
   background-repeat: no-repeat; */
@@ -34,4 +34,18 @@ body {
 .g-btn > div > svg {
   width: 40px !important;
   height: 38px !important;
+}
+
+
+
+
+/* Add this to your existing CSS or create a new file */
+.activity-form {
+  margin-bottom: 20px;
+}
+
+.add-button,
+.delete-button {
+  margin-left: 10px;
+  cursor: pointer;
 }
