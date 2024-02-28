@@ -1,193 +1,3 @@
-// import React, { useState, useEffect, useRef } from 'react';
-// import { database } from '/Users/adarshkumar/tracker-app/src/firebase.js';
-// import { ref, push, remove, onValue, update } from 'firebase/database';
-// import { MdCancel } from "react-icons/md";
-// import { MdRestartAlt } from "react-icons/md";
-// import { BsSignStopFill } from "react-icons/bs";
-// import { IoIosExpand } from "react-icons/io";
-// import { FaPause } from "react-icons/fa6";
-// import { GrResume } from "react-icons/gr";
-
-// const ActivityTracker = () => {
-//     const [activities, setActivities] = useState([]);
-//     const [inputValue, setInputValue] = useState('');
-//     const [timerState, setTimerState] = useState({}); // Track timer state for each activity
-//     const intervalRefs = useRef({});
-
-//     useEffect(() => {
-//         const activitiesRef = ref(database, 'activities');
-//         const unsubscribe = onValue(activitiesRef, (snapshot) => {
-//             const data = snapshot.val();
-//             if (data) {
-//                 const activityList = Object.keys(data).map((key) => ({
-//                     id: key,
-//                     name: data[key].name,
-//                     instances: data[key].instances || [],
-//                     showInstances: false,
-//                 }));
-//                 setActivities(activityList);
-//             } else {
-//                 setActivities([]);
-//             }
-//         });
-
-//         return () => {
-//             unsubscribe();
-//             Object.values(intervalRefs.current).forEach((interval) => clearInterval(interval));
-//         };
-//     }, []);
-
-//     const handleInputChange = (event) => {
-//         setInputValue(event.target.value);
-//     };
-
-//     const handleKeyPress = (event) => {
-//         if (event.key === 'Enter' && inputValue.trim() !== '') {
-//             const existingActivity = activities.find((activity) => activity.name === inputValue.trim());
-//             if (existingActivity) {
-//                 alert(`Activity "${inputValue.trim()}" already exists!`);
-//                 return;
-//             }
-
-//             const newActivity = {
-//                 name: inputValue.trim(),
-//                 instances: [],
-//                 showInstances: false,
-//             };
-//             setActivities((prevActivities) => [...prevActivities, newActivity]);
-//             setInputValue('');
-//             saveActivity(newActivity);
-//         }
-//     };
-
-//     const saveActivity = (newActivity) => {
-//         try {
-//             const activitiesRef = ref(database, 'activities');
-//             push(activitiesRef, newActivity);
-//         } catch (error) {
-//             console.error("Error saving activity:", error);
-//         }
-//     };
-
-//     const startTimer = (activityId) => {
-//         const startTime = Date.now();
-//         intervalRefs.current[activityId] = setInterval(() => {
-//             const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-//             setActivities((prevActivities) =>
-//                 prevActivities.map((activity) =>
-//                     activity.id === activityId ? { ...activity, elapsedTime } : activity
-//                 )
-//             );
-//         }, 1000);
-//         setTimerState((prevTimerState) => ({ ...prevTimerState, [activityId]: 'started' }));
-//     };
-
-//     const pauseTimer = (activityId) => {
-//         clearInterval(intervalRefs.current[activityId]);
-//         setTimerState((prevTimerState) => ({ ...prevTimerState, [activityId]: 'paused' }));
-//     };
-
-//     const resumeTimer = (activityId) => {
-//         const startTime = Date.now() - (activities.find((activity) => activity.id === activityId).elapsedTime * 1000);
-//         intervalRefs.current[activityId] = setInterval(() => {
-//             const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-//             setActivities((prevActivities) =>
-//                 prevActivities.map((activity) =>
-//                     activity.id === activityId ? { ...activity, elapsedTime } : activity
-//                 )
-//             );
-//         }, 1000);
-//         setTimerState((prevTimerState) => ({ ...prevTimerState, [activityId]: 'started' }));
-//     };
-
-//     const stopTimer = (activityId) => {
-//         clearInterval(intervalRefs.current[activityId]);
-
-//         const activity = activities.find((activity) => activity.id === activityId);
-//         const instance = { startTime: Date.now(), elapsedTime: activity.elapsedTime };
-//         const updatedInstances = [...activity.instances, instance];
-
-//         const activityRef = ref(database, `activities/${activityId}`);
-//         update(activityRef, { instances: updatedInstances });
-
-//         setActivities((prevActivities) =>
-//             prevActivities.map((activity) =>
-//                 activity.id === activityId ? { ...activity, elapsedTime: 0 } : activity
-//             )
-//         );
-//         setTimerState((prevTimerState) => ({ ...prevTimerState, [activityId]: 'stopped' }));
-//     };
-
-//     const deleteActivity = (activityId) => {
-//         clearInterval(intervalRefs.current[activityId]);
-
-//         setActivities((prevActivities) => prevActivities.filter((activity) => activity.id !== activityId));
-
-//         const activityRef = ref(database, `activities/${activityId}`);
-//         remove(activityRef)
-//             .then(() => {
-//                 console.log("Activity deleted successfully");
-//             })
-//             .catch((error) => {
-//                 console.error("Error deleting activity:", error);
-//             });
-//     };
-
-//     const toggleInstances = (activityId) => {
-//         setActivities((prevActivities) =>
-//             prevActivities.map((activity) =>
-//                 activity.id === activityId ? { ...activity, showInstances: !activity.showInstances } : activity
-//             )
-//         );
-//     };
-
-//     return (
-//         <div>
-//             <h1>Activity Tracker</h1>
-//             <input
-//                 type="text"
-//                 placeholder="Enter activity name"
-//                 value={inputValue}
-//                 onChange={handleInputChange}
-//                 onKeyPress={handleKeyPress}
-//             />
-//             {activities.map((activity) => (
-//                 <div key={activity.id} style={{ border: '1px solid #ccc', padding: '10px', margin: '10px 0', borderRadius: '5px', position: 'relative' }}>
-//                     <button
-//                         style={{ position: 'absolute', top: '5px', right: '5px', cursor: 'pointer' }}
-//                         onClick={() => deleteActivity(activity.id)}
-//                     >
-//                        <MdCancel />
-//                     </button>
-//                     <h3>{activity.name}</h3>
-//                     <div>
-//                         {activity.showInstances && activity.instances.map((instance, index) => (
-//                             <div key={index}>
-//                                 <p>Start Time: {new Date(instance.startTime).toLocaleString()}</p>
-//                                 <p>Elapsed Time: {instance.elapsedTime} seconds</p>
-//                             </div>
-//                         ))}
-//                         {(timerState[activity.id] === 'started' || !timerState[activity.id]) && (
-//                             <button onClick={() => pauseTimer(activity.id)}><FaPause /></button>
-//                         )}
-//                         {timerState[activity.id] === 'paused' && (
-//                             <button onClick={() => resumeTimer(activity.id)}><GrResume /></button>
-//                         )}
-//                         <button onClick={() => startTimer(activity.id)}><MdRestartAlt /></button>
-//                         <button onClick={() => stopTimer(activity.id)}><BsSignStopFill /></button>
-//                         <button onClick={() => toggleInstances(activity.id)}><IoIosExpand /></button>
-//                     </div>
-//                 </div>
-//             ))}
-//         </div>
-//     );
-// };
-
-// export default ActivityTracker;
-
-
-
-
 
 import React, { useState, useEffect, useRef } from "react";
 import { database } from "/Users/adarshkumar/tracker-app/src/firebase.js";
@@ -258,28 +68,30 @@ const ActivityTracker = () => {
 
   const handleKeyPress = (event) => {
     if (event.key === "Enter" && inputValue.trim() !== "") {
-      const existingActivity = activities.find(
-        (activity) => activity.name === inputValue.trim()
-      );
-      if (existingActivity) {
-        alert(`Activity "${inputValue.trim()}" already exists!`);
-        return;
-      }
+        const existingActivity = activities.find(
+            (activity) => activity.name === inputValue.trim()
+        );
+        if (existingActivity) {
+            alert(`Activity "${inputValue.trim()}" already exists!`);
+            return;
+        }
 
-      const newActivity = {
-        name: inputValue.trim(),
-        instances: [],
-        showInstances: false,
-        elapsedTime: 0,
-      };
-      setActivities((prevActivities) => [...prevActivities, newActivity]);
-      setInputValue("");
-      saveActivity(newActivity);
+        const newActivity = {
+            name: inputValue.trim(),
+            instances: [],
+            showInstances: false,
+            // elapsedTime: 0,
+            startTime: Date.now(), // Set startTime as a timestamp representing the current time
+        };
+        setActivities((prevActivities) => [...prevActivities, newActivity]);
+        setInputValue("");
+        saveActivity(newActivity);
 
-      // Start timer for the newly created activity
-      // startTimer(newActivity.id);
+        // Start timer for the newly created activity
+        // startTimer(newActivity.id);
     }
-  };
+};
+
 
   const saveActivity = (newActivity) => {
     try {
@@ -295,101 +107,215 @@ const ActivityTracker = () => {
     }
   };
 
-  const startTimer = (activityId) => {
-    // Clear all interval timers
-    Object.values(intervalRefs.current).forEach((interval) =>
-      clearInterval(interval)
+
+const startTimer = (activityId) => {
+  // Stop timer for other activities
+  Object.keys(timerState).forEach((key) => {
+    if (key !== activityId && timerState[key] === "started") {
+      stopTimer(key);
+    }
+  });
+
+  // Clear all interval timers
+  Object.values(intervalRefs.current).forEach((interval) =>
+    clearInterval(interval)
+  );
+
+  // Get the current time as start time
+  const startTime = Date.now();
+  console.log(startTime + "time");
+
+  // Update activity status and start time in the database in real-time
+  const activityRef = ref(
+    database,
+    `activities/${auth.currentUser.uid}/${activityId}`
+  );
+  update(activityRef, {
+    status: "started",
+  });
+
+  // Start new timer for the selected activity
+  intervalRefs.current[activityId] = setInterval(() => {
+    const elapsedTime = Math.floor(
+      (Date.now() -
+        startTime +
+        activities.find((activity) => activity.id === activityId).elapsedTime *
+          1000) /
+        1000
     );
-
-    // Start new timer for the selected activity
-    const startTime = Date.now();
-    intervalRefs.current[activityId] = setInterval(() => {
-      const elapsedTime = Math.floor(
-        (Date.now() -
-          startTime +
-          activities.find((activity) => activity.id === activityId)
-            .elapsedTime *
-            1000) /
-          1000
-      );
-      setActivities((prevActivities) =>
-        prevActivities.map((activity) =>
-          activity.id === activityId ? { ...activity, elapsedTime } : activity
-        )
-      );
-    }, 1000);
-
-    // Set timer state
-    setTimerState((prevTimerState) => ({
-      ...prevTimerState,
-      [activityId]: "started",
-    }));
-
-    // Stop timer for other activities
     setActivities((prevActivities) =>
-      prevActivities.map((activity) => ({
-        ...activity,
-        elapsedTime: 0,
-      }))
+      prevActivities.map((activity) =>
+        activity.id === activityId ? { ...activity, elapsedTime } : activity
+      )
     );
-  };
+  }, 1000);
 
-  const pauseTimer = (activityId) => {
+  // Update timer state
+  setTimerState((prevTimerState) => ({
+    ...prevTimerState,
+    [activityId]: "started",
+  }));
+
+  // Set startTime directly in the activity object
+  setActivities((prevActivities) =>
+    prevActivities.map((activity) =>
+      activity.id === activityId ? { ...activity, startTime } : activity
+    )
+  );
+};
+
+
+  
+
+// const pauseTimer = (activityId) => {
+//     clearInterval(intervalRefs.current[activityId]); // Clear the interval timer
+
+//     // Get the current activity
+//     const currentActivity = activities.find((activity) => activity.id === activityId);
+//     console.log("Activity data:", currentActivity);
+//     if (!currentActivity) {
+//         console.error("Activity not found:", activityId);
+//         return;
+//     }
+
+//     // Calculate the elapsed time since the activity started
+//     const elapsedSinceStart = Math.floor((Date.now() - new Date(currentActivity.startTime).getTime()) / 1000);
+
+//     // Update the activity's elapsed time with the new value
+//     const updatedActivities = activities.map((activity) =>
+//         activity.id === activityId ? { ...activity, elapsedTime: currentActivity.elapsedTime + elapsedSinceStart } : activity
+//     );
+//     setActivities(updatedActivities);
+
+//     // Update timer state to paused
+//     setTimerState((prevTimerState) => ({
+//         ...prevTimerState,
+//         [activityId]: "paused",
+//     }));
+
+//     // Update activity status to 'paused' in the database
+//     const activityRef = ref(database, `activities/${auth.currentUser.uid}/${activityId}`);
+//     update(activityRef, { status: "paused" });
+// };
+
+const pauseTimer = (activityId) => {
+  clearInterval(intervalRefs.current[activityId]);
+  setTimerState((prevTimerState) => ({
+    ...prevTimerState,
+    [activityId]: "paused",
+  }));
+};
+  
+  
+
+// const resumeTimer = (activityId) => {
+//     console.log("Activities state:", activities);
+//     const activity = activities.find((activity) => activity.id === activityId);
+//     console.log("Activities state:", activities);
+//     console.log("Activity data:", activity); // Log the retrieved activity data
+//     if (!activity || !activity.startTime) {
+//       console.error("Invalid activity data:", activity);
+//       return;
+//     }
+  
+//     // Access the elapsed time before resuming
+//     const pausedElapsedTime = activity.elapsedTime;
+  
+//     // Clear any existing interval for the activity
+//     clearInterval(intervalRefs.current[activityId]);
+  
+//     intervalRefs.current[activityId] = setInterval(() => {
+//       // Calculate the current elapsed time based on paused time and current time
+//       const currentElapsedTime =
+//         Math.floor(
+//           (Date.now() - new Date(activity.startTime).getTime() + pausedElapsedTime * 1000) /
+//             1000
+//         );
+  
+//       setActivities((prevActivities) =>
+//         prevActivities.map((act) =>
+//           act.id === activityId ? { ...act, elapsedTime: currentElapsedTime } : act
+//         )
+//       );
+//     }, 1000);
+  
+//     // Update the timer state to "started"
+//     setTimerState((prevTimerState) => ({
+//       ...prevTimerState,
+//       [activityId]: "started",
+//     }));
+  
+//     // Update activity status to "started" in the database
+//     const activityRef = ref(database, `activities/${auth.currentUser.uid}/${activityId}`);
+//     update(activityRef, { status: "started" });
+//   };
+  
+
+  
+  
+  
+  
+const resumeTimer = (activityId) => {
+  const startTime = Date.now();
+  intervalRefs.current[activityId] = setInterval(() => {
+    const elapsedTime = Math.floor(
+      (Date.now() -
+        startTime +
+        activities.find((activity) => activity.id === activityId)
+          .elapsedTime *
+          1000) /
+        1000
+    );
+    setActivities((prevActivities) =>
+      prevActivities.map((activity) =>
+        activity.id === activityId ? { ...activity, elapsedTime } : activity
+      )
+    );
+  }, 1000);
+  setTimerState((prevTimerState) => ({
+    ...prevTimerState,
+    [activityId]: "started",
+  }));
+};
+
+  
+  
+  
+  
+
+// stop timer 
+const stopTimer = (activityId) => {
     clearInterval(intervalRefs.current[activityId]);
-    setTimerState((prevTimerState) => ({
-      ...prevTimerState,
-      [activityId]: "paused",
-    }));
-  };
-
-  const resumeTimer = (activityId) => {
-    const startTime = Date.now();
-    intervalRefs.current[activityId] = setInterval(() => {
-      const elapsedTime = Math.floor(
-        (Date.now() -
-          startTime +
-          activities.find((activity) => activity.id === activityId)
-            .elapsedTime *
-            1000) /
-          1000
-      );
-      setActivities((prevActivities) =>
-        prevActivities.map((activity) =>
-          activity.id === activityId ? { ...activity, elapsedTime } : activity
-        )
-      );
-    }, 1000);
-    setTimerState((prevTimerState) => ({
-      ...prevTimerState,
-      [activityId]: "started",
-    }));
-  };
-
-  const stopTimer = (activityId) => {
-    clearInterval(intervalRefs.current[activityId]);
-
-    const activity = activities.find((activity) => activity.id === activityId);
-    const instance = {
-      startTime: Date.now(),
-      elapsedTime: activity.elapsedTime,
-    };
-    const updatedInstances = [...activity.instances, instance];
-
+  
+    // Get the current time as stop time
+    const stopTime = Date.now();
+  
+    // Update activity status and stop time in the database in real-time
     const activityRef = ref(
       database,
       `activities/${auth.currentUser.uid}/${activityId}`
-    ); // Update the activity path
+    );
+    update(activityRef, {
+      status: "stopped",
+      stopTime: stopTime,
+    });
+  
+    const activity = activities.find((activity) => activity.id === activityId);
+    const instance = {
+      startTime: new Date(stopTime - activity.elapsedTime * 1000).toLocaleString(),
+      stopTime: new Date(stopTime).toLocaleString(),
+      elapsedTime: activity.elapsedTime,
+    };
+    const updatedInstances = [...activity.instances, instance];
+  
     update(activityRef, {
       instances: updatedInstances,
       elapsedTime: 0,
-      status: "active",
-    }); // Update instances, elapsedTime, and status
-
+    });
+  
     setActivities((prevActivities) =>
       prevActivities.map((activity) =>
-        activity.id === activityId
-          ? { ...activity, elapsedTime: 0, status: "active" }
-          : activity
+        activity.id === activityId ? { ...activity, elapsedTime: 0 } : activity
       )
     );
     setTimerState((prevTimerState) => ({
@@ -398,6 +324,9 @@ const ActivityTracker = () => {
     }));
   };
 
+
+
+  
   const deleteActivity = (activityId) => {
     clearInterval(intervalRefs.current[activityId]);
 
@@ -421,15 +350,34 @@ const ActivityTracker = () => {
     );
   };
 
+  // const toggleInstances = (activityId) => {
+  //   setActivities((prevActivities) =>
+  //     prevActivities.map((activity) =>
+  //       activity.id === activityId
+  //         ? { ...activity, showInstances: !activity.showInstances }
+  //         : activity
+  //     )
+  //   );
+  // };
   const toggleInstances = (activityId) => {
+    // Get the current activity
+    const activity = activities.find((activity) => activity.id === activityId);
+    if (!activity) {
+        console.error("Activity not found:", activityId);
+        return;
+    }
+
+    // Update the showInstances property of the activity in the database
+    const activityRef = ref(database, `activities/${auth.currentUser.uid}/${activityId}`);
+    update(activityRef, { showInstances: !activity.showInstances });
+
+    // Update the local state to reflect the change
     setActivities((prevActivities) =>
-      prevActivities.map((activity) =>
-        activity.id === activityId
-          ? { ...activity, showInstances: !activity.showInstances }
-          : activity
-      )
+        prevActivities.map((activity) =>
+            activity.id === activityId ? { ...activity, showInstances: !activity.showInstances } : activity
+        )
     );
-  };
+};
 
   const formatTime = (seconds) => {
     const hours = Math.floor(seconds / 3600);
@@ -532,40 +480,69 @@ const ActivityTracker = () => {
                   borderRadius: "10px",
                 }}
               >
-                {activity.showInstances &&
-                  activity.instances.map((instance, index) => (
-                    <ul className="list-group">
-                      {activity.instances.map((instance, index) => (
-                        <li key={index} className="list-group-item">
-                          <div style={{ textAlign: "left", color: "black" }}>
-                            <p>
-                              Start Time:{" "}
-                              {new Date(instance.startTime).toLocaleString()}
-                            </p>
-                            <p>Elapsed Time: {instance.elapsedTime} sec</p>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  ))}
-              </div>
 
-              {timerState[activity.id] === "started" ? (
-                <button
-                  className="px-3 py-2 "
-                  onClick={() => pauseTimer(activity.id)}
-                >
-                  <FaPause />
-                </button>
+{activity.showInstances && (
+  <ul className="list-group">
+    {activity.instances.map((instance, index) => {
+      // Split the start time string into components
+      const [startDate, startTime] = instance.startTime.split(", ");
+      const [startDay, startMonth, startYear] = startDate.split("/");
+      const [startHourMinute, startAmPm] = startTime.split(" ");
+      const [startHour, startMinute, startSecond] = startHourMinute.split(":");
+      
+      // Create a new Date object for the start time
+      const startDateObj = new Date(`${startMonth}/${startDay}/${startYear} ${startHour}:${startMinute}:${startSecond} ${startAmPm}`);
+
+      // Calculate the end time based on start time and elapsed time
+      const endTimeObj = new Date(startDateObj.getTime() + instance.elapsedTime * 1000);
+
+      return (
+        <li key={index} className="list-group-item">
+          <div style={{ textAlign: "left", color: "black" }}>
+            <p>
+              Start Time:{" "}
+              {instance.startTime ? (
+                startDateObj.toLocaleString([], { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true }) // Use the formatted start time
               ) : (
-                <button
-                  className="px-3 py-2  "
-                  onClick={() => startTimer(activity.id)}
-                >
-                  {" "}
-                  <FaPlay />
-                </button>
+                "N/A"
               )}
+            </p>
+            <p>
+              End Time:{" "}
+              {endTimeObj.toLocaleString([], { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true })} {/* Use the formatted end time */}
+            </p>
+            <p>Elapsed Time: {instance.elapsedTime} sec</p>
+          </div>
+        </li>
+      );
+    })}
+  </ul>
+)}
+
+
+
+
+
+              </div>
+              {timerState[activity.id] === "started" ? (
+        <button className="px-3 py-2" onClick={() => pauseTimer(activity.id)}>
+          <FaPause /> 
+        </button>
+      ) : timerState[activity.id] === "paused" ? (
+        <button className="px-3 py-2" onClick={() => resumeTimer(activity.id)}>
+          <FaPlay /> 
+        </button>
+      ) : (
+        <button className="px-3 py-2" onClick={() => startTimer(activity.id)}>
+          <FaPlay /> 
+        </button>
+      )}
+  
+{/* <button className="px-3 py-2" onClick={() => resumeTimer(activity.id)}>
+  <FaPlay />
+  Resume
+</button> */}
+
               <button
                 className="px-3 py-2 "
                 onClick={() => stopTimer(activity.id)}

@@ -35,7 +35,7 @@ const Login = () => {
 
   return (
     <>
-      <div className="p-4 box">
+      <div className="p-4 box  ">
        <div style={{ textAlign: 'center' }}>
            <h2 className="mb-3">Login</h2>
        </div>
@@ -73,7 +73,7 @@ const Login = () => {
           />
         </div>
       </div>
-      <div className="p-4 box mt-3 text-center">
+      <div className="p-4 box mt-3 text-center ">
         Don't have an account? <Link to="/signup">Sign up</Link>
       </div>
     </>
