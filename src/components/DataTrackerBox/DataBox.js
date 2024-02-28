@@ -6,7 +6,7 @@ import { FaPause, FaPlay } from "react-icons/fa";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import CustomNavbar from "../NavBar/NavBar";
-import { auth } from "/Users/adarshkumar/tracker-app/src/firebase.js"; // Make sure to replace '/path/to/firebase' with the actual path to your Firebase configuration file
+import { auth } from "/Users/adarshkumar/tracker-app/src/firebase.js"; 
 
 import "bootstrap-icons/font/bootstrap-icons.css";
 
@@ -61,6 +61,8 @@ const ActivityTracker = () => {
       };
     }
   }, [user]);
+
+  
 
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
@@ -165,38 +167,6 @@ const startTimer = (activityId) => {
 };
 
 
-  
-
-// const pauseTimer = (activityId) => {
-//     clearInterval(intervalRefs.current[activityId]); // Clear the interval timer
-
-//     // Get the current activity
-//     const currentActivity = activities.find((activity) => activity.id === activityId);
-//     console.log("Activity data:", currentActivity);
-//     if (!currentActivity) {
-//         console.error("Activity not found:", activityId);
-//         return;
-//     }
-
-//     // Calculate the elapsed time since the activity started
-//     const elapsedSinceStart = Math.floor((Date.now() - new Date(currentActivity.startTime).getTime()) / 1000);
-
-//     // Update the activity's elapsed time with the new value
-//     const updatedActivities = activities.map((activity) =>
-//         activity.id === activityId ? { ...activity, elapsedTime: currentActivity.elapsedTime + elapsedSinceStart } : activity
-//     );
-//     setActivities(updatedActivities);
-
-//     // Update timer state to paused
-//     setTimerState((prevTimerState) => ({
-//         ...prevTimerState,
-//         [activityId]: "paused",
-//     }));
-
-//     // Update activity status to 'paused' in the database
-//     const activityRef = ref(database, `activities/${auth.currentUser.uid}/${activityId}`);
-//     update(activityRef, { status: "paused" });
-// };
 
 const pauseTimer = (activityId) => {
   clearInterval(intervalRefs.current[activityId]);
@@ -208,47 +178,7 @@ const pauseTimer = (activityId) => {
   
   
 
-// const resumeTimer = (activityId) => {
-//     console.log("Activities state:", activities);
-//     const activity = activities.find((activity) => activity.id === activityId);
-//     console.log("Activities state:", activities);
-//     console.log("Activity data:", activity); // Log the retrieved activity data
-//     if (!activity || !activity.startTime) {
-//       console.error("Invalid activity data:", activity);
-//       return;
-//     }
-  
-//     // Access the elapsed time before resuming
-//     const pausedElapsedTime = activity.elapsedTime;
-  
-//     // Clear any existing interval for the activity
-//     clearInterval(intervalRefs.current[activityId]);
-  
-//     intervalRefs.current[activityId] = setInterval(() => {
-//       // Calculate the current elapsed time based on paused time and current time
-//       const currentElapsedTime =
-//         Math.floor(
-//           (Date.now() - new Date(activity.startTime).getTime() + pausedElapsedTime * 1000) /
-//             1000
-//         );
-  
-//       setActivities((prevActivities) =>
-//         prevActivities.map((act) =>
-//           act.id === activityId ? { ...act, elapsedTime: currentElapsedTime } : act
-//         )
-//       );
-//     }, 1000);
-  
-//     // Update the timer state to "started"
-//     setTimerState((prevTimerState) => ({
-//       ...prevTimerState,
-//       [activityId]: "started",
-//     }));
-  
-//     // Update activity status to "started" in the database
-//     const activityRef = ref(database, `activities/${auth.currentUser.uid}/${activityId}`);
-//     update(activityRef, { status: "started" });
-//   };
+
   
 
   
@@ -403,6 +333,15 @@ const stopTimer = (activityId) => {
       activity.status !== "deleted" // Filter out deleted activities
   );
 
+
+  const calculateTotalTimeSpent = (activity) => {
+    let totalTimeSpent = 0;
+    activity.instances.forEach((instance) => {
+      totalTimeSpent += instance.elapsedTime;
+    });
+    return totalTimeSpent;
+  };
+
   return (
     <div>
       <CustomNavbar handleSearch={handleSearch} />
@@ -480,6 +419,9 @@ const stopTimer = (activityId) => {
                   borderRadius: "10px",
                 }}
               >
+                <div style={{ textAlign: "center", fontSize: "20px", color: "black" }}>
+    Total Time Spent: {formatTime(calculateTotalTimeSpent(activity))}
+  </div>
 
 {activity.showInstances && (
   <ul className="list-group">
