@@ -62,8 +62,6 @@ const ActivityTracker = () => {
     }
   }, [user]);
 
-  
-
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
   };
@@ -280,15 +278,6 @@ const stopTimer = (activityId) => {
     );
   };
 
-  // const toggleInstances = (activityId) => {
-  //   setActivities((prevActivities) =>
-  //     prevActivities.map((activity) =>
-  //       activity.id === activityId
-  //         ? { ...activity, showInstances: !activity.showInstances }
-  //         : activity
-  //     )
-  //   );
-  // };
   const toggleInstances = (activityId) => {
     // Get the current activity
     const activity = activities.find((activity) => activity.id === activityId);
@@ -480,11 +469,6 @@ const stopTimer = (activityId) => {
         </button>
       )}
   
-{/* <button className="px-3 py-2" onClick={() => resumeTimer(activity.id)}>
-  <FaPlay />
-  Resume
-</button> */}
-
               <button
                 className="px-3 py-2 "
                 onClick={() => stopTimer(activity.id)}
@@ -507,3 +491,6 @@ const stopTimer = (activityId) => {
 };
 
 export default ActivityTracker;
+
+
+
