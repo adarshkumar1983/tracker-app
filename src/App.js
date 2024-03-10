@@ -7,12 +7,12 @@ import Signup from "./components/Signup";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { UserAuthContextProvider } from "./context/ UserAuthContext";
 import TimerApp from "./components/DataTrackerBox/DataBox"; 
-
-
+import Footer from "./components/Foot/Footer";
 
 function App() {
   return (
-    <Container style={{ width: "100%" }} >
+  <div> 
+    <Container style={{ flex: 1 }} >
       <Row>
         <Col>
           <UserAuthContextProvider>
@@ -22,19 +22,24 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Home />
-                    <div style={{ width: "100%", padding: "20px" }}>
+                    
+                    <div style={{ width: "100%", padding: "20px",marginTop:"0%"}}>
                       <TimerApp />
+                      
                     </div>
+                    <Footer/>
                   </ProtectedRoute>
                 }
+
                />
 
                 <Route
                   path="/"
                   element={
-                    <div style={{ width: "400px" }}>
+                    <div style={{ width: "400px" ,marginTop:"100" }}>
                       <Login />
                     </div>
+
                   }
                />
               <Route
@@ -46,14 +51,24 @@ function App() {
                 }
               />
             </Routes>
+
           </UserAuthContextProvider>
+
         </Col>
+
       </Row>
+
     </Container>
+             <div style={{marginTop:"0%"}}>  
+       
+             </div>
+ 
+    </div>
   );
 }
 
 export default App;
+
 // import { Container, Row, Col } from "react-bootstrap";
 // import { Routes, Route } from "react-router-dom";
 // import "./App.css";

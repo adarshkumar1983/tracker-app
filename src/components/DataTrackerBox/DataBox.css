@@ -1,32 +1,31 @@
-/* .card {
-    position: relative;
-    width: 300px;
-    height: 250px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    overflow: hidden;
+/* Base styles */
+.activity-card {
+  border: 1.5px solid #ccc;
+  padding: 20px;
+  margin: 10px 0;
+  border-radius: 11px;
+  background-color: white;
+  position: relative;
+ }
+ 
+ /* Responsive styles */
+ @media (max-width: 768px) {
+  .activity-card {
+     min-width: 100%;
+     width: 100%;
   }
-  
-  .card .content {
-    padding: 20px;
+ }
+ 
+ @media (min-width: 769px) and (max-width: 1024px) {
+  .activity-card {
+     min-width: 50%;
+     width: 50%;
   }
-  
-  .card .content p {
-    margin: 0;
+ }
+ 
+ @media (min-width: 1025px) {
+  .activity-card {
+     min-width: 33.33%;
+     width: 33.33%;
   }
-  
-  .card button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .card button:hover {
-    color: red;
-  }
-   */
+ }
