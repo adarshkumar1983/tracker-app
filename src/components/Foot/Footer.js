@@ -1,5 +1,5 @@
 import React from 'react';
-import  "/Users/adarshkumar/tracker-app/src/components/Foot/footer.css";
+// import  "";
 
 export default function App() {
   return (
