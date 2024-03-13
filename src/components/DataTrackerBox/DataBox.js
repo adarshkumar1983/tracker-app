@@ -1,13 +1,12 @@
 
 
 import React, { useState, useEffect, useRef } from "react";
-import { database } from "/Users/adarshkumar/tracker-app/src/firebase.js";
+import { database } from "../../firebase";
 import { ref, push, onValue, update,  } from "firebase/database";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import CustomNavbar from "../NavBar/NavBar";
-
-import { auth } from "/Users/adarshkumar/tracker-app/src/firebase.js";
+import { auth } from "../../firebase";
 
 import "bootstrap-icons/font/bootstrap-icons.css";
 // import Footer from "../Foot/Footer";

@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
 import React, { useState } from 'react';
 import { Navbar, Container, Nav, FormControl } from 'react-bootstrap';
-import { useUserAuth } from "/Users/adarshkumar/tracker-app/src/context/ UserAuthContext.js";
+import { useUserAuth } from "../../context/ UserAuthContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import logo from '../NavBar/health.png';
