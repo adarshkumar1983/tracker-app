@@ -2,14 +2,16 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { database } from "/Users/adarshkumar/tracker-app/src/firebase.js";
-import { ref, push, remove, onValue, update, set } from "firebase/database";
-import { FaPause, FaPlay } from "react-icons/fa";
+import { ref, push, onValue, update,  } from "firebase/database";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import CustomNavbar from "../NavBar/NavBar";
+
 import { auth } from "/Users/adarshkumar/tracker-app/src/firebase.js";
+
 import "bootstrap-icons/font/bootstrap-icons.css";
-import Footer from "../Foot/Footer";
+// import Footer from "../Foot/Footer";
+
 const ActivityTracker = () => {
   const [activities, setActivities] = useState([]);
   const [inputValue, setInputValue] = useState("");
