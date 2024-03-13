@@ -634,7 +634,7 @@ const ActivityTracker = () => {
 
     <div
       style={{
-        marginTop: "900px", // Adjusted margin top to create space between input box and activity cards
+        marginTop: "200px", // Adjusted margin top to create space between input box and activity cards
         maxHeight: "calc(100vh - 200px)",
         overflowY: "auto",
         justifyContent:"center",

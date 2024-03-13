@@ -27,7 +27,7 @@ function App() {
                       <TimerApp />
                       
                     </div>
-                    <Footer/>
+                    {/* <Footer/> */}
                   </ProtectedRoute>
                 }
 
