@@ -1,11 +1,12 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
-import React, { useState } from 'react';
+import React, { useState ,Component} from 'react';
+
 import { Navbar, Container, Nav, FormControl } from 'react-bootstrap';
 import { useUserAuth } from "../../context/ UserAuthContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import logo from '../NavBar/health.png';
-import  "/Users/adarshkumar/tracker-app/src/components/NavBar/CustomNavbar.css";
+// import  "./CustomNavabr.css";
 // import defaultProfilePic from '../NavBar/default-profile-pic.png'; // Import default profile picture
 
 const CustomNavbar = ({ handleSearch }) => {
@@ -53,7 +54,18 @@ const CustomNavbar = ({ handleSearch }) => {
     <div className="user-info" onClick={toggleDetails}>
       {/* Move expanded-details outside of Nav to make it appear over the navbar */}
       {showDetails && (
-        <div className="expanded-details">
+
+        <div 
+        style={{
+          position: 'absolute',
+          top: '100%', /* Position it below the user-info div */
+          right: '0',
+          backgroundColor: '#343a40', /* Adjust as needed */
+          padding: '10px',
+          borderRadius: '5px',
+          zIndex: '1000' /* Ensure it appears above other elements */
+        }}
+        className="expanded-details">
           <p className="text-light mb-1">{user.displayName || user.email}</p>
           <button onClick={logOut} className="btn btn-danger btn-sm">Logout</button>
         </div>
