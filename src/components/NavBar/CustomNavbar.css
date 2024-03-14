@@ -1,18 +1,19 @@
 /* CustomNavbar.css */
 .user-info {
-    display: flex;
+    display: block;
     align-items: center;
   }
   
   .expanded-details {
     position: absolute;
-    background-color: #0479ee;
-    color: #fff;
-    border-radius: 0.25rem;
-    padding: 0.5rem;
-    top: 100%;
+    top: 100%; /* Position it below the user-info div */
     right: 0;
+    background-color: #343a40; /* Adjust as needed */
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 1000; /* Ensure it appears above other elements */
   }
+  
   
   /* Adjust the margin to create space between photo and text */
   .expanded-details p {

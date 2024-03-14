@@ -612,25 +612,26 @@ const ActivityTracker = () => {
     <div className="w-full md:w-1/2 lg:w-1/3" >
     <CustomNavbar handleSearch={handleSearch} />
     <input
-      type="text"
-      placeholder="Enter activity name"
-      value={inputValue}
-      onChange={handleInputChange}
-      onKeyPress={handleKeyPress}
-      style={{
-        position: "fixed",
-        top: "0",
-        left: "0",
-        borderRadius: "10px",
-        padding: "8px",
-        margin: "75px 0 0 0", // Changed margin top to make space for the navbar
-        width: "100%",
-        backgroundColor: "#f0f0f0",
-        border: "1px solid #ccc",
-        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-        zIndex: "1000",
-      }}
-    />
+  type="text"
+  placeholder="Enter activity name"
+  value={inputValue}
+  onChange={handleInputChange}
+  onKeyPress={handleKeyPress}
+  style={{
+    position: "fixed",
+    top: "0",
+    left: "0",
+    borderRadius: "10px",
+    padding: "8px",
+    margin: "85px 0 0 0", // Changed margin top to make space for the navbar
+    width: "100%",
+    // backgroundColor: "#00FFFF",
+    border: "2px solid red", // Blue border color
+    boxShadow: "0 2px 4px rgb(255, 87, 51 )",
+    zIndex: "1000",
+  }}
+/>
+
 
     <div
       style={{
