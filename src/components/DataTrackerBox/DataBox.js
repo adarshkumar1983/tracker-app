@@ -607,24 +607,28 @@ const ActivityTracker = () => {
     });
     return totalTimeSpent;
   };
-
+  filteredActivities.sort((a, b) => a.name.localeCompare(b.name));
   return (
     <div className="w-full md:w-1/2 lg:w-1/3" >
     <CustomNavbar handleSearch={handleSearch} />
     <input
-  type="text"
-  placeholder="Enter activity name"
-  value={inputValue}
-  onChange={handleInputChange}
-  onKeyPress={handleKeyPress}
-  style={{
+   type="text"
+   placeholder="Enter activity name"
+   value={inputValue}
+   onChange={handleInputChange}
+   onKeyPress={handleKeyPress}
+   style={{
     position: "fixed",
     top: "0",
-    left: "0",
-    borderRadius: "10px",
+    // left: "20px",
+    borderRadius: "50px",
+
     padding: "8px",
-    margin: "85px 0 0 0", // Changed margin top to make space for the navbar
-    width: "100%",
+
+    marginTop:"85px",
+
+
+    width: "90%",
     // backgroundColor: "#00FFFF",
     border: "2px solid red", // Blue border color
     boxShadow: "0 2px 4px rgb(255, 87, 51 )",
@@ -637,7 +641,7 @@ const ActivityTracker = () => {
       style={{
         marginTop: "200px", // Adjusted margin top to create space between input box and activity cards
         maxHeight: "calc(100vh - 200px)",
-        overflowY: "auto",
+        // overflowY: "auto",
         justifyContent:"center",
         display: "flex",
         flexWrap: "wrap",
@@ -649,12 +653,12 @@ const ActivityTracker = () => {
           key={activity.id}
           style={{
             border: "1.5px solid #ccc",
-            padding: "20px",
-            margin: "10px 0",
+            padding: "15px",
+            margin: "5px 0",
   
             borderRadius: "11px",
             minWidth: "250px",
-            width: "calc(33.33% - 10px)",
+            width: "calc(23.33% - 5px)",
             backgroundColor: "white",
             position: "relative",
           }}
@@ -663,8 +667,8 @@ const ActivityTracker = () => {
             icon={faTimesCircle}
             style={{
               position: "absolute",
-              top: "-2px",
-              right: "-2px",
+              top: "-1px",
+              right: "-1px",
               cursor: "pointer",
               color: "#e32400",
               fontSize: "1.5rem",
@@ -684,7 +688,7 @@ const ActivityTracker = () => {
                 textAlign: "center",
                 fontSize: "1.5rem",
                 fontWeight: "bold",
-                textDecoration: "underline",
+  
               }}
             >
               {activity.name}
@@ -704,7 +708,7 @@ const ActivityTracker = () => {
             <div
               style={{
                 maxHeight: "150px",
-                overflowY: "scroll",
+                // overflowY: "scroll",
                 borderRadius: "10px",
               }}
             >
@@ -727,8 +731,9 @@ const ActivityTracker = () => {
                   width: "100%",
                   padding: "8px",
                   backgroundColor: "#dc3545",
+                  
                   color: "white",
-                  borderRadius: "5px",
+                  borderRadius: "50px",
                   border: "none",
                   cursor: "pointer",
                   fontSize: "1rem",
@@ -744,7 +749,7 @@ const ActivityTracker = () => {
                   padding: "8px",
                   backgroundColor: "#28a745",
                   color: "white",
-                  borderRadius: "5px",
+                  borderRadius: "50px",
                   border: "none",
                   cursor: "pointer",
                   fontSize: "1rem",
@@ -761,7 +766,7 @@ const ActivityTracker = () => {
                   padding: "8px",
                   backgroundColor: "#007bff",
                   color: "white",
-                  borderRadius: "5px",
+                  borderRadius: "50px",
                   border: "none",
                   cursor: "pointer",
                   fontSize: "1rem",
