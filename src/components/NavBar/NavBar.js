@@ -45,7 +45,7 @@ const CustomNavbar = ({ handleSearch }) => {
     type="text"
     
     placeholder="Search"
-   style={{marginRight:"10%",position:"inherit"}}
+   style={{marginRight:"20%",position:"inherit"}}
     value={searchValue}
     onChange={handleInputChange}
   />

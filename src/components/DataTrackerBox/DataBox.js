@@ -620,7 +620,7 @@ const ActivityTracker = () => {
    style={{
     position: "fixed",
     top: "0",
-    // left: "20px",
+    left: "30px",
     borderRadius: "50px",
 
     padding: "8px",
