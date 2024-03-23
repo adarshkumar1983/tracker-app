@@ -6,8 +6,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import CustomNavbar from "../NavBar/NavBar";
 import { auth } from "../../firebase";
-
+import result from "../Result/result";
 import "bootstrap-icons/font/bootstrap-icons.css";
+import { MDBContainer } from "mdb-react-ui-kit";
+import { FaPlus} from "react-icons/fa";
 // import Footer from "../Foot/Footer";
 
 const ActivityTracker = () => {
@@ -17,9 +19,17 @@ const ActivityTracker = () => {
   const intervalRefs = useRef({});
   const startButtonRef = useRef(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [verificationCode, setVerificationCode] = useState('');
+  const [showVerificationDialog, setShowVerificationDialog] = useState(false);
+  const [activityToDelete, setActivityToDelete] = useState(null);
+  const [enteredActivityName, setEnteredActivityName] = useState("");
   const [deletedActivityIds, setDeletedActivityIds] = useState([]);
+  const [showPopup, setShowPopup] = useState(false);
   const [newActivityId, setNewActivityId] = useState(null);
   const [user, setUser] = useState(null); // State to store authenticated user
+  const [verificationInput, setVerificationInput] = useState("");
+
+
 
   useEffect(() => {
     const unsubscribeAuth = auth.onAuthStateChanged((user) => {
@@ -93,18 +103,6 @@ const ActivityTracker = () => {
           }
         }
       });
-      // const storedTimerState = localStorage.getItem("timerState");
-      // const storedStartTimes = localStorage.getItem("startTimes");
-      // if (storedTimerState && storedStartTimes) {
-      //   setTimerState(JSON.parse(storedTimerState));
-      //   const startTimes = JSON.parse(storedStartTimes);
-      //   setActivities((prevActivities) =>
-      //     prevActivities.map((activity) => ({
-      //       ...activity,
-      //       startTime: startTimes[activity.id] || null,
-      //     }))
-      //   );
-      // }
 
       activities.forEach((activity) => {
         if (activity.status === "started") {
@@ -120,15 +118,7 @@ const ActivityTracker = () => {
           }
         }
       });
-      // activities.forEach((activity) => {
-      //   if (activity.status === 'started') {
-      //     const elapsedTime = parseInt(localStorage.getItem(`elapsedTime_${activity.id}`));
-      //     if (!isNaN(elapsedTime)) {
-      //       // Resume the timer
-      //       handleStartOrResumeTimer(activity.id, 'started', elapsedTime);
-      //     }
-      //   }
-      // });
+
       activities.forEach((activity) => {
         if (activity.status === "started") {
           startTimer(activity.id);
@@ -142,7 +132,9 @@ const ActivityTracker = () => {
         );
       };
     }
+    
   }, [user]);
+
 
   const updateElapsedTime = (activityId, elapsedTime) => {
     const elapsedTimeFromStorage =
@@ -185,6 +177,7 @@ const ActivityTracker = () => {
     setInputValue(event.target.value);
   };
 
+  
   const handleKeyPress = (event) => {
     if (event.key === "Enter" && inputValue.trim() !== "") {
       const existingActivity = activities.find(
@@ -205,6 +198,36 @@ const ActivityTracker = () => {
       // startTimer(newActivity.id);
     }
   };
+
+
+
+
+  const handleDeleteConfirmation = (activityId) => {
+    setActivityToDelete(activityId);
+    setShowVerificationDialog(true);
+  };
+
+  const handleDeleteCancel = () => {
+    setShowVerificationDialog(false);
+    setActivityToDelete(null);
+    setVerificationCode('');
+  };
+
+  const handleDeleteConfirm = () => {
+    // Check if the verification code matches
+    if (verificationCode === 'delete') {
+      // Proceed with deleting the activity
+      deleteActivity(activityToDelete);
+      setShowVerificationDialog(false);
+      setActivityToDelete(null);
+      setVerificationCode('');
+    } else {
+      alert('Invalid verification code. Please try again.');
+      setVerificationCode('');
+    }
+  };
+
+
 
   const saveActivity = (newActivity) => {
     try {
@@ -251,76 +274,7 @@ const ActivityTracker = () => {
   };
 
   
-  // const startTimer = (activityId) => {
-  //   console.log("Starting timer for activity:", activityId);
-  //   const activity = activities.find((activity) => activity.id === activityId);
-  //   if (!activity) {
-  //     console.error("Activity not found:", activityId);
-  //     return;
-  //   }
-  
-  //   const ongoingInstance = activity.instances.find(
-  //     (instance) => !instance.stopTime
-  //   );
-  //   if (ongoingInstance) {
-  //     console.log("Timer is already running for this activity.");
-  //     return;
-  //   }
-  //   Object.keys(timerState).forEach((key) => {
-  //     if (key !== activityId && timerState[key] === "started") {
-  //       stopTimer(key);
-  //     }
-  //   });
-  
-  //   Object.values(intervalRefs.current).forEach((interval) =>
-  //     clearInterval(interval)
-  //   );
-  
-  //   const startTime = Date.now();
-  //   const startTimes = JSON.parse(localStorage.getItem("startTimes")) || {};
-  //   startTimes[activityId] = startTime;
-  //   localStorage.setItem("startTimes", JSON.stringify(startTimes));
-  
-  //   const instance = {
-  //     startTime: startTime,
-  //     elapsedTime: activity ? activity.elapsedTime : 0,
-  //   };
-  //   const updatedInstances = [...activity.instances, instance];
-  //   const activityRef = ref(
-  //     database,
-  //     `activities/${auth.currentUser.uid}/${activityId}`
-  //   );
-    
-  //   update(activityRef, {
-  //     status: "started",
-  //     instances: updatedInstances,
-  //     elapsedTime: activity ? activity.elapsedTime : 0, // Ensure that elapsedTime is a valid number
-  //   });
-  
-  //   intervalRefs.current[activityId] = setInterval(() => {
-  //     const elapsedTime = Math.floor(
-  //       (Date.now() -
-  //         startTime +
-  //         (activity ? activity.elapsedTime : 0) * 1000) /
-  //         1000
-  //     );
-  //     setActivities((prevActivities) =>
-  //       prevActivities.map((activity) =>
-  //         activity.id === activityId ? { ...activity, elapsedTime } : activity
-  //       )
-  //     );
-  //     localStorage.setItem(`elapsedTime_${activityId}`, elapsedTime.toString());
-  //   }, 1000);
-  //   setTimerState((prevTimerState) => ({
-  //     ...prevTimerState,
-  //     [activityId]: "started",
-  //   }));
-  //   setActivities((prevActivities) =>
-  //     prevActivities.map((activity) =>
-  //       activity.id === activityId ? { ...activity, startTime } : activity
-  //     )
-  //   );
-  // };
+
   
   const startTimer = (activityId) => {
     console.log('Starting timer for activity:', activityId);
@@ -608,35 +562,77 @@ const ActivityTracker = () => {
     return totalTimeSpent;
   };
   filteredActivities.sort((a, b) => a.name.localeCompare(b.name));
+
+
+
+
+
+
+
   return (
     <div className="w-full md:w-1/2 lg:w-1/3" >
     <CustomNavbar handleSearch={handleSearch} />
-    <input
-   type="text"
-   placeholder="Enter activity name"
-   value={inputValue}
-   onChange={handleInputChange}
-   onKeyPress={handleKeyPress}
-   style={{
-    position: "fixed",
-    top: "0",
-    left: "30px",
-    borderRadius: "50px",
-
-    padding: "8px",
-
-    marginTop:"85px",
-
-
-    width: "90%",
-    // backgroundColor: "#00FFFF",
-    border: "2px solid red", // Blue border color
-    boxShadow: "0 2px 4px rgb(255, 87, 51 )",
-    zIndex: "1000",
-  }}
-/>
-
-
+    <MDBContainer
+      className="py-1"
+      style={{
+        position: "fixed",
+        top: "100px",
+        left: "50%",
+        transform: "translateX(-50%)",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        zIndex: "1000",
+      }}
+    >
+      <div style={{ textAlign: "center", zIndex: "1000", position: "relative" }}>
+        <input
+          type="text"
+          placeholder="Enter activity name"
+          value={inputValue}
+          onChange={handleInputChange}
+          onKeyPress={handleKeyPress}
+          style={{
+            border: "1px solid #ccc",
+            outline: "none",
+            backgroundSize: "22px",
+            backgroundPosition: "13px",
+            borderRadius: "20px",
+            width: "50px",
+            height: "50px",
+            padding: "25px",
+            transition: "all 0.5s",
+            overflow: "hidden", 
+            whiteSpace: "nowrap", 
+            textOverflow: "ellipsis", 
+            zIndex: "1000",
+            background: "yellow",
+            fontSize: "20px",
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.width = "100%";
+            e.target.style.paddingLeft = "50px";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.width = "50px";
+            e.target.style.paddingLeft = "25px";
+          }}
+        />
+        <FaPlus
+          style={{
+            position: "absolute",
+            top: "50%",
+      
+            // left: "calc(100% - 40px)",
+            transform: "translate(-130%, -50%)",
+            pointerEvents: "none",
+            color: "black",
+            fontSize: "30px",
+            zIndex: "1000", // Make sure the plus icon appears above the input field
+          }}
+        />
+      </div>
+    </MDBContainer>
     <div
       style={{
         marginTop: "200px", // Adjusted margin top to create space between input box and activity cards
@@ -649,6 +645,7 @@ const ActivityTracker = () => {
       }}
     >
       {filteredActivities.map((activity) => (
+        
         <div
           key={activity.id}
           style={{
@@ -667,13 +664,14 @@ const ActivityTracker = () => {
             icon={faTimesCircle}
             style={{
               position: "absolute",
-              top: "-1px",
-              right: "-1px",
+              top: "1px",
+              right: "2px",
               cursor: "pointer",
               color: "#e32400",
-              fontSize: "1.5rem",
+              fontSize: "1.1rem",
             }}
-            onClick={() => deleteActivity(activity.id)}
+            // onClick={() => deleteActivity(activity.id)}
+            onClick={() => handleDeleteConfirmation(activity.id)}
           />
 
           <div
@@ -779,6 +777,31 @@ const ActivityTracker = () => {
           </div>
         </div>
       ))}
+    </div>
+    {showVerificationDialog && (
+        <div style={{
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          backgroundColor: "gray",
+          padding: "20px",
+          borderRadius: "10px",
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+          zIndex: "1000",
+        }}>
+          <h3> Write "delete" for Confirmation</h3>
+          <input
+            type="text"
+            value={verificationCode}
+            onChange={(e) => setVerificationCode(e.target.value)}
+          />
+          <button onClick={handleDeleteConfirm}>Confirm</button>
+          <button onClick={handleDeleteCancel}>Cancel</button>
+        </div>
+      )}
+    <div>
+      <  result />
     </div>
   </div>
 );
