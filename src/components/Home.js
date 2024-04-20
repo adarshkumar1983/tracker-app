@@ -28,6 +28,7 @@ const Home = () => {
       </div> */}
        <div>
       <CustomNavbar /> {/* Use the Navbar component */}
+      
 
     </div>
     </>

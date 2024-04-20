@@ -6,11 +6,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import CustomNavbar from "../NavBar/NavBar";
 import { auth } from "../../firebase";
-import result from "../Result/result";
+
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { MDBContainer } from "mdb-react-ui-kit";
 import { FaPlus} from "react-icons/fa";
 // import Footer from "../Foot/Footer";
+import BottomBar from "../NavBar/Bottomnav";
 
 const ActivityTracker = () => {
   const [activities, setActivities] = useState([]);
@@ -571,73 +572,76 @@ const ActivityTracker = () => {
 
   return (
     <div className="w-full md:w-1/2 lg:w-1/3" >
-    <CustomNavbar handleSearch={handleSearch} />
-    <MDBContainer
-      className="py-1"
+ <CustomNavbar handleSearch={handleSearch} />
+<MDBContainer
+  className="py-1"
+  style={{
+    position: "fixed",
+    top: "12%", // Adjust the distance from the top as needed
+    right: "0%", // Adjust the distance from the right as needed
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: "1000",
+   
+  }}
+>
+  <div style={{ textAlign: "center", zIndex: "1000", position: "relative" }}>
+    <input
+      type="text"
+      placeholder="Enter activity name"
+      value={inputValue}
+      onChange={handleInputChange}
+      onKeyPress={handleKeyPress}
       style={{
-        position: "fixed",
-        top: "100px",
-        left: "50%",
-        transform: "translateX(-50%)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        zIndex: "1000",
+        border: "1px solid #ccc",
+        outline: "none",
+        backgroundSize: "22px",
+        backgroundPosition: "13px",
+        borderRadius: "20px",
+        width: "50px",
+        height: "50px",
+        padding: "25px",
+        transition: "all .4s",
+        overflow: "hidden", 
+        whiteSpace: "nowrap", 
+        textOverflow: "ellipsis", 
+        zIndex: "4000",
+        background: "yellow",
+        fontSize: "20px",
       }}
-    >
-      <div style={{ textAlign: "center", zIndex: "1000", position: "relative" }}>
-        <input
-          type="text"
-          placeholder="Enter activity name"
-          value={inputValue}
-          onChange={handleInputChange}
-          onKeyPress={handleKeyPress}
-          style={{
-            border: "1px solid #ccc",
-            outline: "none",
-            backgroundSize: "22px",
-            backgroundPosition: "13px",
-            borderRadius: "20px",
-            width: "50px",
-            height: "50px",
-            padding: "25px",
-            transition: "all 0.5s",
-            overflow: "hidden", 
-            whiteSpace: "nowrap", 
-            textOverflow: "ellipsis", 
-            zIndex: "1000",
-            background: "yellow",
-            fontSize: "20px",
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.width = "100%";
-            e.target.style.paddingLeft = "50px";
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.width = "50px";
-            e.target.style.paddingLeft = "25px";
-          }}
-        />
-        <FaPlus
-          style={{
-            position: "absolute",
-            top: "50%",
-      
-            // left: "calc(100% - 40px)",
-            transform: "translate(-130%, -50%)",
-            pointerEvents: "none",
-            color: "black",
-            fontSize: "30px",
-            zIndex: "1000", // Make sure the plus icon appears above the input field
-          }}
-        />
-      </div>
-    </MDBContainer>
+      onMouseEnter={(e) => {
+        e.target.style.width = "100%";
+        e.target.style.paddingLeft = "50px";
+      }}
+      onMouseLeave={(e) => {
+        e.target.style.width = "50px";
+        e.target.style.paddingLeft = "25px";
+      }}
+    />
+    <FaPlus
+      style={{
+        position: "absolute",
+        top: "50%",
+        transform: "translate(-130%, -50%)",
+        pointerEvents: "none",
+        color: "black",
+        fontSize: "30px",
+        zIndex: "1000", // Make sure the plus icon appears above the input field
+      }}
+    />
+
+  </div>
+</MDBContainer>
+
     <div
       style={{
-        marginTop: "200px", // Adjusted margin top to create space between input box and activity cards
-        maxHeight: "calc(100vh - 200px)",
-        // overflowY: "auto",
+        marginTop: "10px", 
+        maxHeight: "calc(100vh - 290px)",
+
+
+
+        // overflowY: "100%",
         justifyContent:"center",
         display: "flex",
         flexWrap: "wrap",
@@ -649,10 +653,9 @@ const ActivityTracker = () => {
         <div
           key={activity.id}
           style={{
-            border: "1.5px solid #ccc",
+            border: "2.5px solid #ccc",
             padding: "15px",
             margin: "5px 0",
-  
             borderRadius: "11px",
             minWidth: "250px",
             width: "calc(23.33% - 5px)",
@@ -702,6 +705,7 @@ const ActivityTracker = () => {
           >
             {formatTime(activity.elapsedTime)}
           </div>
+
           <div>
             <div
               style={{
@@ -801,7 +805,7 @@ const ActivityTracker = () => {
         </div>
       )}
     <div>
-      <  result />
+
     </div>
   </div>
 );

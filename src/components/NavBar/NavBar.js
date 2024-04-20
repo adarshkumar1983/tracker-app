@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
-import React, { useState ,Component} from 'react';
+import React, { useState ,Component,useEffect} from 'react';
 
 import { Navbar, Container, Nav, FormControl } from 'react-bootstrap';
 import { useUserAuth } from "../../context/ UserAuthContext";
@@ -9,6 +9,8 @@ import logo from '../NavBar/health.png';
 import { MDBContainer } from "mdb-react-ui-kit";
 import { FaSearch } from "react-icons/fa";
 
+import { auth, database } from '../../firebase';
+
 // import  "./CustomNavabr.css";
 // import defaultProfilePic from '../NavBar/default-profile-pic.png'; // Import default profile picture
 
@@ -16,7 +18,37 @@ const CustomNavbar = ({ handleSearch }) => {
   const [searchValue, setSearchValue] = useState('');
   const { user, logOut } = useUserAuth();
   const [showDetails, setShowDetails] = useState(false);
+  const [userData, setUserData] = useState(null);
 
+  useEffect(() => {
+
+    const fetchUserData = async () => {
+      try {
+        const currentUser = auth.currentUser;
+        if (currentUser) {
+          const userId = currentUser.uid;
+          const userRef = database.ref('users/' + userId);
+          userRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            setUserData(data);
+          });
+        } else {
+          console.log('No user is signed in.');
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+  
+    fetchUserData();
+  
+    // Clean up function
+    return () => {
+      // Unsubscribe from Firebase listeners if any
+      database.ref().off();
+    };
+  }, []);
+  
   const handleInputChange = (event) => {
     const query = event.target.value;
     setSearchValue(query);
@@ -26,7 +58,9 @@ const CustomNavbar = ({ handleSearch }) => {
   const toggleDetails = () => {
     setShowDetails(!showDetails);
   };
-
+  
+  
+  
   return (
     <Navbar bg="dark" variant="dark" fixed="top">
       <Container>
@@ -40,7 +74,7 @@ const CustomNavbar = ({ handleSearch }) => {
             className="d-inline-block align-top"
           />
         </Navbar.Brand>
-
+       
 
 <Nav className="ml-auto">
 <MDBContainer className="py-1">
@@ -96,10 +130,11 @@ const CustomNavbar = ({ handleSearch }) => {
         style={{
           position: 'absolute',
           top: '100%', /* Position it below the user-info div */
-          right: '',
+          // width:"15px",
+          // height:"105px",
           backgroundColor: '#343a40', /* Adjust as needed */
           padding: '10px',
-          borderRadius: '50px',
+          borderRadius: '10px',
           zIndex: '1000' /* Ensure it appears above other elements */
         }}
         className="expanded-details">

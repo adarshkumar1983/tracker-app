@@ -8,6 +8,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { UserAuthContextProvider } from "./context/ UserAuthContext";
 import TimerApp from "./components/DataTrackerBox/DataBox"; 
 import Footer from "./components/Foot/Footer";
+import BottomBar from "./components/NavBar/Bottomnav";
 
 function App() {
   return (
@@ -23,11 +24,12 @@ function App() {
                   <ProtectedRoute>
                     <Home />
                     
-                    <div style={{ width: "100%", padding: "20px",marginTop:"0%"}}>
+                    <div style={{ width: "100%", padding: "20px",}}>
                       <TimerApp />
+       
                       
                     </div>
-                    {/* <Footer/> */}
+            
                   </ProtectedRoute>
                 }
 
@@ -59,9 +61,7 @@ function App() {
       </Row>
 
     </Container>
-             <div style={{marginTop:"0%"}}>  
-       
-             </div>
+     
  
     </div>
   );
