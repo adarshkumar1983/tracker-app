@@ -577,8 +577,8 @@ const ActivityTracker = () => {
   className="py-1"
   style={{
     position: "fixed",
-    top: "12%", // Adjust the distance from the top as needed
-    right: "0%", // Adjust the distance from the right as needed
+    top: "12%", 
+    right: "4%", 
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
